@@ -7,6 +7,11 @@ import hashlib
 from multiprocessing.managers import BaseManager
 import multiprocessing as mp
 
+# constant values for address, port and key
+SERVER_ADDRESS = 'localhost'
+SERVER_PORT = 50000
+AUTH_KEY = b'your_secret_key'
+
 # internal queue used to manage new messages
 internal_queue = mp.Queue()
 internal_queue.put([])
@@ -166,7 +171,7 @@ class Layout(QStackedLayout):
         # connects to the message queue
         self.uuid = str(uuid.uuid4())
         QueueManager.register('get_queue')
-        manager = QueueManager(address=('localhost', 50000), authkey=b'your_secret_key')
+        manager = QueueManager(address=(SERVER_ADDRESS, SERVER_PORT), authkey=AUTH_KEY)
         manager.connect()
         # initializes attributes
         self.queue = manager.get_queue()

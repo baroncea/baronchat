@@ -5,6 +5,11 @@ import os
 import sqlite3
 from collections import namedtuple
 
+# constant values for address, port and key
+SERVER_ADDRESS = 'localhost'
+SERVER_PORT = 50000
+AUTH_KEY = b'your_secret_key'
+
 # Create tuples to represent db objects
 User = namedtuple("User", ["id", "username", "password"])
 Message = namedtuple("Message", ["id", "sender_id", "receiver_id", "message"])
@@ -33,7 +38,7 @@ class QueueServer(mp.Process):
     def run(self):
         print("Server started.")
         QueueManager.register('get_queue', callable=lambda: self.queue)
-        manager = QueueManager(address=('localhost', 50000), authkey=b'your_secret_key')
+        manager = QueueManager(address=(SERVER_ADDRESS, SERVER_PORT), authkey=AUTH_KEY)
         sv = manager.get_server()
         sv.serve_forever()
 
