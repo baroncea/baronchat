@@ -41,18 +41,13 @@ class Login(QWidget):
         self.layout = lout
 
     def login(self):
-        print("test")
         # gets login details
         usr = self.username.text()
         passwd = hashlib.md5(self.password.text().encode()).hexdigest()
-        print("test")
         # sends them to server via message queue
         messages = self.layout.queue.get()
-        print("test")
         messages.append(f'SERVER {self.layout.uuid} LOGIN {usr} {passwd}')
-        print("test")
         self.layout.queue.put(messages)
-        print("test123")
         # wait for confirmation from the server
         try:
             self.layout.handle_message()
@@ -105,9 +100,6 @@ class Chat(QWidget):
         self.layout = lout
 
     def get_user(self):
-        # checks if the chat updater is active and kills it if so
-        if self.layout.chat_updater.is_alive():
-            self.layout.chat_updater.kill()
         # gets username
         usr = self.receiver_username.text()
         # asks server for messages
@@ -117,6 +109,9 @@ class Chat(QWidget):
         # handles message stream from server
         try:
             chat_messages = self.layout.handle_message()
+            # checks if the chat updater is active and kills it if so
+            if self.layout.chat_updater.is_alive():
+                self.layout.chat_updater.kill()
             # adds the messages to the chat window
             self.chat_window.setPlainText('')
             for message in chat_messages:
